@@ -1,4 +1,19 @@
-This is your new Play application
+Todo - A simple web app written with Scala and Play
 =================================
 
-This file will be packaged with your application, when using `activator dist`.
+Dependencies
+-------
+
+* Java JDK 6 (minimum)
+
+Running the app
+-------
+
+From a terminal, `cd` to the cloned directory and run `./activator run`.
+This will download all the needed dependencies for building and running the application.
+
+You should eventually see a message like this -
+
+```[info] play - Listening for HTTP on /0:0:0:0:0:0:0:0:9000```
+
+At this point you can navigate to `localhost:9000` in your browser.
