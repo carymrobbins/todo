@@ -1,3 +1,4 @@
+import models.Todo
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
@@ -32,7 +33,17 @@ class ApplicationSpec extends Specification {
       val add = route(r).get
       status(add) must equalTo(CREATED)
       contentType(add) must beSome.which(_ == "application/json")
-      contentAsJson(add) \ "id" must beAnInstanceOf[JsNumber]
+      val id = contentAsJson(add) \ "id"
+      id must beAnInstanceOf[JsNumber]
+      Todo.findById(id.as[Long]).get.text mustEqual "foo"
+    }
+
+    "delete a todo item" in new WithApplication{
+      val todo = Todo.create("foo")
+      val r = FakeRequest(DELETE, "/todo/" + todo.id.get)
+      val delete = route(r).get
+      status(delete) must equalTo(NO_CONTENT)
+      Todo.findById(todo.id.get) must beNone
     }
   }
 }

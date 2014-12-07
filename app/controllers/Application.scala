@@ -52,7 +52,7 @@ object Application extends Controller {
   }
 
   def deleteTodo(id: Long) = Action { implicit request =>
-    if (Todo.delete(id)) Ok else NotFound
+    if (Todo.delete(id)) NoContent else NotFound
   }
 
   def jsRoutes = Action { implicit request =>
