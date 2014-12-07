@@ -17,3 +17,12 @@ You should eventually see a message like this -
 ```[info] play - Listening for HTTP on /0:0:0:0:0:0:0:0:9000```
 
 At this point you can navigate to `localhost:9000` in your browser.
+
+Persistence
+-------
+
+The current implementation uses an in-memory H2 database.  This means that data **will not** persist between
+restarts of the application.
+
+Upon each run of the application you will be notified that `Database 'default' needs evolution!`.  Click the
+`Apply this script now!` button to create the appropriate database schema.
