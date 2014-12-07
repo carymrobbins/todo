@@ -2,7 +2,7 @@
 
     <script src="@routes.Assets.at("js/index.js")" type="text/javascript"></script>
 
-    <form action="@routes.Application.addTodo()" method="post">
+    <form id="addTodoForm" action="@routes.Application.addTodo()" method="post">
         <input name="text" type="text"/>
         <button>Create todo item</button>
     </form>

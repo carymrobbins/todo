@@ -10,11 +10,6 @@ import utils.DateTimeUtil
 
 
 case class Todo(id: Option[Long], text: String, createdOn: DateTime, completedOn: Option[DateTime]) {
-  def insert: Todo = DB.withSession { implicit session =>
-    (Todo.todos returning Todo.todos.map(_.id)
-      into ((todo, id) => todo.copy(id = Some(id)))) += this
-  }
-
   private def forUpdate(newText: String, completed: Boolean): Todo = {
     val newCompletedOn = completedOn.orElse(Some(DateTimeUtil.utcNow())).filter(Function.const(completed))
     Todo(id, newText, createdOn, newCompletedOn)
@@ -25,8 +20,9 @@ object Todo {
   private val todos: TableQuery[Todos] = TableQuery[Todos]
   val tupled = (Todo.apply _).tupled
   implicit val asJson = Json.format[Todo]
-  def create(text: String) = Todo(None, text, DateTimeUtil.utcNow(), None)
-  def unapplyText(todo: Todo) = Some(todo.text)
+  def add(text: String) = DB.withSession { implicit session =>
+    todos.insert(Todo(None, text, DateTimeUtil.utcNow(), None))
+  }
   def list = DB.withSession { implicit session => todos.list }
   def findById(id: Long): Option[Todo] = DB.withSession { implicit session => todos.filter(_.id === id).firstOption }
   def update(id: Long, text: String, completed: Boolean): Option[Todo] = DB.withSession { implicit session =>

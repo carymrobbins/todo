@@ -3,7 +3,7 @@ package controllers
 import models.Todo
 import play.api.Routes
 import play.api.data.Form
-import play.api.data.Forms.{text => _, _}
+import play.api.data.Forms._
 import play.api.libs.json.Json
 import play.api.mvc._
 
@@ -13,32 +13,38 @@ object Application extends Controller {
     Ok(views.html.index())
   }
 
-  val newTodoForm: Form[Todo] = Form {
+  case class NewTodoData(text: String)
+
+  val newTodoForm: Form[NewTodoData] = Form {
     mapping(
       "text" -> nonEmptyText
-    )(Todo.create)(Todo.unapplyText)
+    )(NewTodoData.apply)(NewTodoData.unapply)
   }
 
   def addTodo() = Action { implicit request =>
-    newTodoForm.bindFromRequest.get.insert
-    Redirect(routes.Application.index())
+    newTodoForm.bindFromRequest.value match {
+      case None => BadRequest("The text field is required!")
+      case Some(data) => Todo.add(data.text); Ok
+    }
   }
 
   def getTodos = Action {
     Ok(Json.toJson(Todo.list))
   }
 
+  case class UpdateTodoData(text: String, completed: Boolean)
+
   val updateTodoForm = Form {
-    tuple(
+    mapping(
       "text" -> nonEmptyText,
       "completed" -> boolean
-    )
+    )(UpdateTodoData.apply)(UpdateTodoData.unapply)
   }
 
   def updateTodo(id: Long) = Action { implicit request =>
     updateTodoForm.bindFromRequest.value match {
-      case None => BadRequest
-      case Some((text, completed)) => Todo.update(id, text, completed) match {
+      case None => BadRequest("The text field is required!")
+      case Some(data) => Todo.update(id, data.text, data.completed) match {
         case None => NotFound
         case Some(_) => Ok
       }
@@ -48,6 +54,7 @@ object Application extends Controller {
   def jsRoutes = Action { implicit request =>
     Ok(
       Routes.javascriptRouter("jsRoutes")(
+        controllers.routes.javascript.Application.addTodo,
         controllers.routes.javascript.Application.updateTodo
       )
     ).as("text/javascript")
