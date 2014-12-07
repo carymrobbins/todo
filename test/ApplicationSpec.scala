@@ -33,9 +33,11 @@ class ApplicationSpec extends Specification {
       val add = route(r).get
       status(add) must equalTo(CREATED)
       contentType(add) must beSome.which(_ == "application/json")
-      val id = contentAsJson(add) \ "id"
-      id must beAnInstanceOf[JsNumber]
-      Todo.findById(id.as[Long]).get.text mustEqual "foo"
+      val json = contentAsJson(add)
+      json \ "id" must beAnInstanceOf[JsNumber]
+      (json \ "text").as[String] mustEqual "foo"
+      json \ "completedOn" must beAnInstanceOf[JsUndefined]
+      Todo.findById((json \ "id").as[Long]).get.text mustEqual "foo"
     }
 
     "delete a todo item" in new WithApplication{
@@ -44,6 +46,30 @@ class ApplicationSpec extends Specification {
       val delete = route(r).get
       status(delete) must equalTo(NO_CONTENT)
       Todo.findById(todo.id.get) must beNone
+    }
+
+    "update a todo item" in new WithApplication{
+      val todo = Todo.create("foo")
+      val r = FakeRequest(PUT, "/todo/" + todo.id.get)
+      val update = route(r.withJsonBody(Json.parse(""" {"text": "bar"} """))).get
+      status(update) must equalTo(OK)
+      contentType(update) must beSome.which(_ == "application/json")
+      val json = contentAsJson(update)
+      (json \ "id").as[Long] mustEqual todo.id.get
+      (json \ "text").as[String] mustEqual "bar"
+      json \ "completedOn" must beAnInstanceOf[JsUndefined]
+    }
+
+    "update a todo item as completed" in new WithApplication{
+      val todo = Todo.create("foo")
+      val r = FakeRequest(PUT, "/todo/" + todo.id.get)
+      val update = route(r.withJsonBody(Json.parse(""" {"text": "bar", "completed": true} """))).get
+      status(update) must equalTo(OK)
+      contentType(update) must beSome.which(_ == "application/json")
+      val json = contentAsJson(update)
+      (json \ "id").as[Long] mustEqual todo.id.get
+      (json \ "text").as[String] mustEqual "bar"
+      json \ "completedOn" must beAnInstanceOf[JsUndefined].not
     }
   }
 }

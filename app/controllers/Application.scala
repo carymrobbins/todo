@@ -46,7 +46,7 @@ object Application extends Controller {
       case None => BadRequest("The text field is required!")
       case Some(data) => Todo.update(id, data.text, data.completed) match {
         case None => NotFound
-        case Some(_) => Ok
+        case Some(todo) => Ok(Json.toJson(todo))
       }
     }
   }
