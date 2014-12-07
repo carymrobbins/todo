@@ -33,4 +33,7 @@ object Todo {
         Some(todo)
     }
   }
+  def delete(id: Long): Boolean = DB.withSession { implicit session =>
+    todos.filter(_.id === id).delete != 0
+  }
 }

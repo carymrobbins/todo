@@ -22,16 +22,21 @@ var appendTodo = function($todos, todo) {
 
 var makeUpdateForm = function(todo) {
     var completed = todo.completedOn !== undefined && todo.completedOn !== null;
-    var $text, $completed;
-    return $("<form></form>")
+    var $form, $text, $completed, $update, $delete;
+    $form = $("<form></form>")
         .append($('<input type="hidden" name="id"/>').val(todo.id))
         .append($text = $('<input type="text" name="text"/>').val(todo.text))
         .append($completed = $('<input type="checkbox" name="completed"/>').prop('checked', completed))
-        .append($('<button>Update</button>'))
-        .on('submit', function(e) {
-            e.preventDefault();
-            updateTodo(todo.id, $text.val(), $completed.prop('checked'), noop, alertError);
-        });
+        .append($update = $('<button>Update</button>'))
+        .append($delete = $('<button>Delete</button>'))
+        .on('submit', function(e) { e.preventDefault(); });
+    $update.on('click', function () {
+        updateTodo(todo.id, $text.val(), $completed.prop('checked'), noop, alertError);
+    });
+    $delete.on('click', function () {
+        deleteTodo(todo.id, function () { $form.parent().remove(); }, alertError);
+    });
+    return $form;
 };
 
 var addTodo = function(text, success, error) {
@@ -51,6 +56,16 @@ var updateTodo = function(id, text, completed, success, error) {
         url: r.url,
         type: r.type,
         data: {text: text, completed: completed},
+        success: success,
+        error: error
+    });
+};
+
+var deleteTodo = function(id, success, error) {
+    var r = jsRoutes.controllers.Application.deleteTodo(id);
+    $.ajax({
+        url: r.url,
+        type: r.type,
         success: success,
         error: error
     });

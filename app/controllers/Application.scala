@@ -51,11 +51,16 @@ object Application extends Controller {
     }
   }
 
+  def deleteTodo(id: Long) = Action { implicit request =>
+    if (Todo.delete(id)) Ok else NotFound
+  }
+
   def jsRoutes = Action { implicit request =>
     Ok(
       Routes.javascriptRouter("jsRoutes")(
         controllers.routes.javascript.Application.addTodo,
-        controllers.routes.javascript.Application.updateTodo
+        controllers.routes.javascript.Application.updateTodo,
+        controllers.routes.javascript.Application.deleteTodo
       )
     ).as("text/javascript")
   }

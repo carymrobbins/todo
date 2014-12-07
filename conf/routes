@@ -11,6 +11,8 @@ GET         /todos               controllers.Application.getTodos
 
 PUT         /todo/:id            controllers.Application.updateTodo(id: Long)
 
+DELETE      /todo/:id            controllers.Application.deleteTodo(id: Long)
+
 GET         /jsRoutes            controllers.Application.jsRoutes
 
 # Map static resources from the /public folder to the /assets URL path
