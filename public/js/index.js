@@ -1,21 +1,30 @@
 $(document).ready(function() {
     var $todos = $("#todos");
-    $.get("/todos", function(todos) {
-        $.each(todos, function(_, todo) { appendTodo($todos, todo); });
-    });
+    writeTodosList($todos);
+    configureAddTodoForm($todos);
+});
+
+var noop = function() {};
+
+var displayError = function(e) { return alert(e.responseText); };
+
+var configureAddTodoForm = function($todos) {
     var $addTodoForm = $("#addTodoForm"),
         $addTodoText = $addTodoForm.find("input[name=text]");
     $addTodoForm.on('submit', function(e) {
         e.preventDefault();
         var text = $addTodoText.val();
         var success = function (todo) { appendTodo($todos, todo); $addTodoText.val(""); };
-        addTodo(text, success, alertError);
+        addTodo(text, success, displayError);
     });
-});
+};
 
-var noop = function() {};
-
-var alertError = function(e) { return alert(e.responseText); };
+var writeTodosList = function($todos) {
+    var success = function(todos) {
+        $.each(todos, function(_, todo) { appendTodo($todos, todo); });
+    };
+    getTodos(success, displayError);
+};
 
 var appendTodo = function($todos, todo) {
     $todos.append($("<li></li>").append(makeUpdateForm(todo)));
@@ -32,13 +41,23 @@ var makeUpdateForm = function(todo) {
         .append($delete = $('<button>Delete</button>'))
         .on('submit', function(e) { e.preventDefault(); });
     $update.on('click', function () {
-        updateTodo(todo.id, $text.val(), $completed.prop('checked'), noop, alertError);
+        updateTodo(todo.id, $text.val(), $completed.prop('checked'), noop, displayError);
     });
     $delete.on('click', function () {
         var success = function () { $form.parent().remove(); };
-        deleteTodo(todo.id, success, alertError);
+        deleteTodo(todo.id, success, displayError);
     });
     return $form;
+};
+
+var getTodos = function(success, error) {
+    var r = jsRoutes.controllers.Application.getTodos();
+    $.ajax({
+        url: r.url,
+        type: r.type,
+        success: success,
+        error: error
+    });
 };
 
 var addTodo = function(text, success, error) {
