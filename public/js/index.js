@@ -8,7 +8,7 @@ $(document).ready(function() {
     $addTodoForm.on('submit', function(e) {
         e.preventDefault();
         var text = $addTodoText.val();
-        addTodo(text, function () { appendTodo($todos, {text: text}); }, alertError);
+        addTodo(text, function (todo) { appendTodo($todos, todo); }, alertError);
     });
 });
 

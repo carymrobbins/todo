@@ -1,6 +1,7 @@
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
+import play.api.libs.json._
 
 import play.api.test._
 import play.api.test.Helpers._
@@ -24,7 +25,14 @@ class ApplicationSpec extends Specification {
 
       status(home) must equalTo(OK)
       contentType(home) must beSome.which(_ == "text/html")
-      contentAsString(home) must contain ("Your new application is ready.")
+    }
+
+    "add a todo item" in new WithApplication{
+      val r = FakeRequest(POST, "/todo").withJsonBody(Json.parse(""" {"text": "foo"} """))
+      val add = route(r).get
+      status(add) must equalTo(CREATED)
+      contentType(add) must beSome.which(_ == "application/json")
+      contentAsJson(add) \ "id" must beAnInstanceOf[JsNumber]
     }
   }
 }

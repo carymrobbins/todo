@@ -20,8 +20,9 @@ object Todo {
   private val todos: TableQuery[Todos] = TableQuery[Todos]
   val tupled = (Todo.apply _).tupled
   implicit val asJson = Json.format[Todo]
-  def add(text: String) = DB.withSession { implicit session =>
-    todos.insert(Todo(None, text, DateTimeUtil.utcNow(), None))
+  def create(text: String): Todo = DB.withSession { implicit session =>
+    val newTodo = Todo(None, text, DateTimeUtil.utcNow(), None)
+    (todos returning todos.map(_.id) into ((todo, id) => todo.copy(id = Some(id)))) += newTodo
   }
   def list = DB.withSession { implicit session => todos.list }
   def findById(id: Long): Option[Todo] = DB.withSession { implicit session => todos.filter(_.id === id).firstOption }

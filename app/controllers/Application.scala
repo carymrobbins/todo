@@ -24,7 +24,7 @@ object Application extends Controller {
   def addTodo() = Action { implicit request =>
     newTodoForm.bindFromRequest.value match {
       case None => BadRequest("The text field is required!")
-      case Some(data) => Todo.add(data.text); Ok
+      case Some(data) => Created(Json.toJson(Todo.create(data.text)))
     }
   }
 
