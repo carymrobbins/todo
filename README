@@ -4,7 +4,7 @@ Todo - A simple web app written with Scala and Play
 Dependencies
 -------
 
-* Java JDK 6 (minimum)
+Java JDK 6 (minimum)
 
 Running the app
 -------
