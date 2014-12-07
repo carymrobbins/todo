@@ -8,7 +8,8 @@ $(document).ready(function() {
     $addTodoForm.on('submit', function(e) {
         e.preventDefault();
         var text = $addTodoText.val();
-        addTodo(text, function (todo) { appendTodo($todos, todo); $addTodoText.val(""); }, alertError);
+        var success = function (todo) { appendTodo($todos, todo); $addTodoText.val(""); };
+        addTodo(text, success, alertError);
     });
 });
 
@@ -34,7 +35,8 @@ var makeUpdateForm = function(todo) {
         updateTodo(todo.id, $text.val(), $completed.prop('checked'), noop, alertError);
     });
     $delete.on('click', function () {
-        deleteTodo(todo.id, function () { $form.parent().remove(); }, alertError);
+        var success = function () { $form.parent().remove(); };
+        deleteTodo(todo.id, success, alertError);
     });
     return $form;
 };
