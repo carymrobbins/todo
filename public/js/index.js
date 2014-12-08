@@ -41,10 +41,7 @@ var makeUpdateForm = function(todo) {
     var updateEvent = buildUpdateEvent(todo, wrapper);
     configureUpdateText(wrapper, updateEvent);
     configureCompletedButton(wrapper, updateEvent);
-    wrapper.delete.on('click', function() {
-        var success = function() { wrapper.row.remove(); };
-        deleteTodo(todo.id, success, displayError);
-    });
+    configureDeleteButton(wrapper);
     return wrapper.row;
 };
 
@@ -73,7 +70,7 @@ var buildUpdateFormWrapper = function($row) {
         createdOn: $form.find('.createdOn'),
         completed: $form.find('input[name=completed]'),
         completedButton: $form.find('.completed-button'),
-        delete: $form.find('.delete-button')
+        deleteButton: $form.find('.delete-button')
     };
 };
 
@@ -109,6 +106,22 @@ var configureCompletedButton = function(wrapper, updateEvent) {
         toggleCheckbox(wrapper.completed);
         updateButton();
         updateEvent();
+    });
+};
+
+var configureDeleteButton = function(wrapper) {
+    var $modal = $('#deleteModal');
+    wrapper.deleteButton.on('click', function() {
+        $modal.find('.todo-text').text(wrapper.text.val());
+        $modal.find('.cancel-button').on('click', function() { $modal.modal('hide'); });
+        $modal.find('.delete-button').on('click', function() {
+            var success = function() {
+                wrapper.row.remove();
+                $modal.modal('hide');
+            };
+            deleteTodo(wrapper.form.data('todo').id, success, displayError);
+        });
+        $modal.modal('show');
     });
 };
 
