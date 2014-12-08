@@ -58,6 +58,7 @@ object Application extends Controller {
   def jsRoutes = Action { implicit request =>
     Ok(
       Routes.javascriptRouter("jsRoutes")(
+        // NOTE: IntelliJ complains 'Cannot resolve symbol javascript'.  Ignore it for now.
         controllers.routes.javascript.Application.getTodos,
         controllers.routes.javascript.Application.addTodo,
         controllers.routes.javascript.Application.updateTodo,
