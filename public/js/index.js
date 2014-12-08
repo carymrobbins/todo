@@ -41,7 +41,7 @@ var makeUpdateForm = function(todo) {
     var updateEvent = buildUpdateEvent(todo, wrapper);
     configureUpdateText(wrapper, updateEvent);
     configureCompletedButton(wrapper, updateEvent);
-    configureDeleteButton(wrapper);
+    configureDeleteButton(wrapper, todo.id);
     return wrapper.row;
 };
 
@@ -99,7 +99,8 @@ var configureUpdateText = function(wrapper, updateEvent) {
 
 var configureCompletedButton = function(wrapper, updateEvent) {
     var updateButton = function() {
-        toggleClass(wrapper.completedButton, wrapper.completed.prop('checked'), 'btn-success', 'btn-default');
+        toggleClass(wrapper.completedButton, wrapper.completed.prop('checked'),
+                    'btn-success button-checked', 'btn-default button-unchecked');
     };
     updateButton();
     wrapper.completedButton.on('click', function() {
@@ -109,17 +110,18 @@ var configureCompletedButton = function(wrapper, updateEvent) {
     });
 };
 
-var configureDeleteButton = function(wrapper) {
+var configureDeleteButton = function(wrapper, id) {
     var $modal = $('#deleteModal');
     wrapper.deleteButton.on('click', function() {
         $modal.find('.todo-text').text(wrapper.text.val());
         $modal.find('.cancel-button').on('click', function() { $modal.modal('hide'); });
-        $modal.find('.delete-button').on('click', function() {
+        // Using .off() to remove any previous event handlers.
+        $modal.find('.delete-button').off().on('click', function() {
             var success = function() {
                 wrapper.row.remove();
                 $modal.modal('hide');
             };
-            deleteTodo(wrapper.form.data('todo').id, success, displayError);
+            deleteTodo(id, success, displayError);
         });
         $modal.modal('show');
     });
