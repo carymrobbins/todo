@@ -2,6 +2,7 @@ $(document).ready(function() {
     var $todos = $("#todos");
     writeTodosList($todos);
     configureAddTodoForm($todos);
+    startTimeUpdater();
 });
 
 var displayError = function(e, defaultError) {
@@ -48,17 +49,29 @@ var makeUpdateForm = function(todo) {
 };
 
 var newUpdateFormWrapper = function(todo) {
-    var completed = todo.completedOn !== undefined,
-        $row = $('#updateTodoFormTemplate').find('.wrapper').clone(),
-        $form = $row.find('form');
+    var $row = $('#updateTodoFormTemplate').find('.row.wrapper').clone();
+    return updateUpdateFormWrapperFromTodo(todo, buildUpdateFormWrapper($row));
+};
+
+var updateUpdateFormWrapperFromTodo = function(todo, wrapper) {
+    wrapper.form.data('todo', todo);
+    wrapper.text.val(todo.text);
+    updateCreatedOnField(wrapper.createdOn, todo.createdOn);
+    updateCompletedOnField(wrapper.completedOn, todo.completedOn);
+    wrapper.completed.prop('checked', todo.completedOn !== undefined);
+    return wrapper;
+};
+
+var buildUpdateFormWrapper = function($row) {
+    var $form = $row.find('form');
     return {
         row: $row,
         form: $form,
-        text: $form.find('input[name=text]').val(todo.text),
+        text: $form.find('input[name=text]'),
         spinner: $form.find('.form-control-feedback'),
-        completedOn: updateCompletedOnField($form.find('.completedOn'), todo.completedOn),
-        createdOn: $form.find('.createdOn').text(formatCreatedOn(todo.createdOn)),
-        completed: $form.find('input[name=completed]').prop('checked', completed),
+        completedOn: $form.find('.completedOn'),
+        createdOn: $form.find('.createdOn'),
+        completed: $form.find('input[name=completed]'),
         completedButton: $form.find('.completed-button'),
         delete: $form.find('.delete-button')
     };
@@ -68,6 +81,7 @@ var buildUpdateEvent = function(todo, wrapper) {
     return function() {
         wrapper.spinner.removeClass('hide');
         var success = function(updatedTodo) {
+            wrapper.form.data('todo', updatedTodo);
             updateCompletedOnField(wrapper.completedOn, updatedTodo.completedOn);
             // Allow the spinner to spin before hiding.
             setTimeout(function() { wrapper.spinner.addClass('hide'); }, 250);
@@ -110,6 +124,24 @@ var toggleCheckbox = function(checkbox) {
 
 var toggleClass = function(element, test, classIfTrue, classIfFalse) {
     element.removeClass(test ? classIfFalse : classIfTrue).addClass(test ? classIfTrue : classIfFalse);
+};
+
+var startTimeUpdater = function() {
+    var everyMinute = 60000;
+    setInterval(function() {
+        $('.row.wrapper').each(function(_, el) {
+            var wrapper = buildUpdateFormWrapper($(el)),
+                todo = wrapper.form.data('todo');
+            // If the data does not exist, we're in the form template.
+            if (todo === undefined) return;
+            updateCreatedOnField(wrapper.createdOn, todo.createdOn);
+            updateCompletedOnField(wrapper.completedOn, todo.completedOn);
+        });
+    }, everyMinute);
+};
+
+var updateCreatedOnField = function($createdOn, createdOn) {
+    return $createdOn.text(formatCreatedOn(createdOn));
 };
 
 var updateCompletedOnField = function($completedOn, newCompletedOn) {
