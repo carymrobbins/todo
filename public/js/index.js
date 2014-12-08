@@ -32,22 +32,32 @@ var appendTodo = function($todos, todo) {
 
 var makeUpdateForm = function(todo) {
     var completed = todo.completedOn !== undefined && todo.completedOn !== null;
-    var $form, $text, $completed, $update, $delete;
+    var $form, $text, $completed, $completedOn, $update, $delete;
     $form = $("<form></form>")
         .append($('<input type="hidden" name="id"/>').val(todo.id))
         .append($text = $('<input type="text" name="text"/>').val(todo.text))
         .append($completed = $('<input type="checkbox" name="completed"/>').prop('checked', completed))
         .append($update = $('<button>Update</button>'))
         .append($delete = $('<button>Delete</button>'))
+        .append($completedOn = updateCompletedOnField($('<span></span>'), todo.completedOn))
         .on('submit', function(e) { e.preventDefault(); });
     $update.on('click', function () {
-        updateTodo(todo.id, $text.val(), $completed.prop('checked'), noop, displayError);
+        var success = function (updatedTodo) {
+            updateCompletedOnField($completedOn, updatedTodo.completedOn);
+        };
+        updateTodo(todo.id, $text.val(), $completed.prop('checked'), success, displayError);
     });
     $delete.on('click', function () {
         var success = function () { $form.parent().remove(); };
         deleteTodo(todo.id, success, displayError);
     });
     return $form;
+};
+
+var updateCompletedOnField = function($completedOn, newCompletedOn) {
+    return newCompletedOn === undefined
+        ? $completedOn.text("")
+        : $completedOn.text('Completed ' + moment(newCompletedOn).fromNow());
 };
 
 var getTodos = function(success, error) {
