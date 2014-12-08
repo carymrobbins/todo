@@ -69,7 +69,7 @@ class ApplicationSpec extends Specification {
       val json = contentAsJson(update)
       (json \ "id").as[Long] mustEqual todo.id.get
       (json \ "text").as[String] mustEqual "bar"
-      json \ "completedOn" must beAnInstanceOf[JsUndefined].not
+      json \ "completedOn" must beAnInstanceOf[JsNumber]
     }
   }
 }
