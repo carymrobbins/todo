@@ -4,8 +4,6 @@ $(document).ready(function() {
     configureAddTodoForm($todos);
 });
 
-var noop = function() {};
-
 var displayError = function(e) { return alert(e.responseText); };
 
 var configureAddTodoForm = function($todos) {
