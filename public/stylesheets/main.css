@@ -7,6 +7,18 @@
     margin: 0 !important;
 }
 
+.button-unchecked {
+    color: #ccc !important;
+}
+
+.button-checked {
+    color: white;
+}
+
+.button-checked {
+    color: white;
+}
+
 .glyphicon-refresh-animate {
     -animation: spin .7s infinite linear;
     -webkit-animation: spin2 .7s infinite linear;
