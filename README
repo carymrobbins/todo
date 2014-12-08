@@ -4,16 +4,15 @@ Todo - A simple web app written with Scala and Play
 Dependencies
 -------
 
-Java JDK 6 (minimum)
-Bower (http://bower.io/)
+* Java JDK 6 (minimum)
+* Bower (http://bower.io/)
 
 Running the app
 -------
 
-From a terminal, `cd` to the cloned directory.
-Install the bower dependencies using `bower install`
-Now you can run the development server using `./activator run`
-This will download all the needed dependencies for building and running the application.
+1. From a terminal, `cd` to the cloned directory.
+1. Install the bower dependencies using `bower install`
+1. Now you can run the development server using `./activator run`.  This will download all the needed dependencies for building and running the application.
 
 You should eventually see a message like this -
 
