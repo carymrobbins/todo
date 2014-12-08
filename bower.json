@@ -1,0 +1,21 @@
+{
+  "name": "todo",
+  "version": "0.0.0",
+  "authors": [
+    "Cary Robbins <carymrobbins@gmail.com>"
+  ],
+  "license": "Apache 2.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "moment": "~2.8.4",
+    "jquery": "~2.1.1",
+    "bootstrap": "~3.3.1"
+  }
+}
