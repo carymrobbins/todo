@@ -49,7 +49,7 @@ var makeUpdateForm = function(todo) {
 
 var newUpdateFormWrapper = function(todo) {
     var completed = todo.completedOn !== undefined,
-        $row = $('#updateTodoFormTemplate').find('.row').clone(),
+        $row = $('#updateTodoFormTemplate').find('.wrapper').clone(),
         $form = $row.find('form');
     return {
         row: $row,
@@ -58,6 +58,7 @@ var newUpdateFormWrapper = function(todo) {
         spinner: $form.find('.form-control-feedback'),
         completed: $form.find('input[name=completed]').prop('checked', completed),
         completedOn: updateCompletedOnField($form.find('.completedOn'), todo.completedOn),
+        createdOn: $form.find('.createdOn').text(formatCreatedOn(todo.createdOn)),
         update: $form.find('.update-button'),
         delete: $form.find('.delete-button')
     };
@@ -88,7 +89,15 @@ var configureUpdateText = function(wrapper, updateEvent) {
 var updateCompletedOnField = function($completedOn, newCompletedOn) {
     return newCompletedOn === undefined
         ? $completedOn.text("")
-        : $completedOn.text('Completed ' + moment(newCompletedOn).fromNow());
+        : $completedOn.text(formatCompletedOn(newCompletedOn));
+};
+
+var formatCreatedOn = function(createdOn) {
+    return 'Created ' + moment(createdOn).fromNow();
+};
+
+var formatCompletedOn = function(completedOn) {
+    return 'Completed ' + moment(completedOn).fromNow();
 };
 
 var getTodos = function(success, error) {

@@ -6,7 +6,9 @@
         <form id="addTodoForm" role="form">
             <div class="col-md-8">
                 <h1 class="text-center">My todo list</h1>
-                <input name="text" type="text" class="form-control" placeholder="New todo text..." autocomplete="off"/>
+                <div class="form-group">
+                    <input name="text" type="text" class="form-control" placeholder="New todo text..." autocomplete="off"/>
+                </div>
             </div>
         </form>
     </div>
@@ -14,21 +16,32 @@
     <div id="todos"></div>
 
     <div id="updateTodoFormTemplate" class="hide">
-        <div class="row">
+        <div class="row wrapper">
             <form role="form">
-                <input type="hidden" name="id"/>
                 <div class="form-group">
-                    <div class="col-md-8">
-                        <div class="form-group has-feedback">
-                            <input type="text" name="text" class="form-control" autocomplete="off"/>
-                            <i class="hide glyphicon glyphicon-refresh glyphicon-refresh-animate form-control-feedback"></i>
+                    <input type="hidden" name="id"/>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group no-margin has-feedback">
+                                    <input type="text" name="text" class="form-control" autocomplete="off"/>
+                                    <i class="hide glyphicon glyphicon-refresh glyphicon-refresh-animate form-control-feedback"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-4 no-gutter">
+                                <input type="checkbox" name="completed"/>
+                                <button class="update-button btn btn-default"><i class="glyphicon glyphicon-ok"></i></button>
+                                <button class="delete-button btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-4 no-gutter">
-                        <input type="checkbox" name="completed"/>
-                        <button class="update-button btn btn-default"><i class="glyphicon glyphicon-ok"></i></button>
-                        <button class="delete-button btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>
-                        <span class="completedOn"></span>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <em class="createdOn"></em>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <em class="completedOn"></em>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
