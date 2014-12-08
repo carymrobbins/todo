@@ -1,11 +1,28 @@
-@main("Your todo list") {
+@main("My todo list") {
 
     <script src="@routes.Assets.at("js/index.js")" type="text/javascript"></script>
 
-    <form id="addTodoForm" action="@routes.Application.addTodo()" method="post">
-        <input name="text" type="text"/>
-        <button>Create todo item</button>
-    </form>
+    <div class="row">
+        <h1>My todo list</h1>
+    </div>
 
-    <ul id="todos"></ul>
+    <div class="row">
+        <form id="addTodoForm" role="form">
+            <input name="text" type="text" class="form-control" placeholder="New todo text..." autocomplete="off"/>
+        </form>
+    </div>
+
+    <div id="todos"></div>
+
+    <div id="errorModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content panel panel-danger">
+                <div class="panel-heading">Error</div>
+                <div class="panel-body text-center">
+                    <p class="error-message"></p>
+                    <button class="ok-button btn btn-danger">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }

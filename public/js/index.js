@@ -4,7 +4,13 @@ $(document).ready(function() {
     configureAddTodoForm($todos);
 });
 
-var displayError = function(e) { return alert(e.responseText); };
+var displayError = function(e, defaultError) {
+    var error = (e && e.responseText) || defaultError || "Oops, an error occurred.",
+        $modal = $('#errorModal');
+    $modal.find('.error-message').text(error);
+    $modal.find('.ok-button').on('click', function() { $modal.modal('hide'); });
+    $modal.modal('show');
+};
 
 var configureAddTodoForm = function($todos) {
     var $addTodoForm = $("#addTodoForm"),
@@ -25,18 +31,18 @@ var writeTodosList = function($todos) {
 };
 
 var appendTodo = function($todos, todo) {
-    $todos.append($("<li></li>").append(makeUpdateForm(todo)));
+    $todos.append($('<div class="row"></div>').append(makeUpdateForm(todo)));
 };
 
 var makeUpdateForm = function(todo) {
     var completed = todo.completedOn !== undefined && todo.completedOn !== null;
     var $form, $text, $completed, $completedOn, $update, $delete;
-    $form = $("<form></form>")
+    $form = $('<form role="form"></form>')
         .append($('<input type="hidden" name="id"/>').val(todo.id))
-        .append($text = $('<input type="text" name="text"/>').val(todo.text))
+        .append($text = $('<input type="text" name="text" class="form-control" autocomplete="off"/>').val(todo.text))
         .append($completed = $('<input type="checkbox" name="completed"/>').prop('checked', completed))
-        .append($update = $('<button>Update</button>'))
-        .append($delete = $('<button>Delete</button>'))
+        .append($update = $('<button class="btn btn-success"><i class="glyphicon glyphicon-ok"></i></button>'))
+        .append($delete = $('<button class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>'))
         .append($completedOn = updateCompletedOnField($('<span></span>'), todo.completedOn))
         .on('submit', function(e) { e.preventDefault(); });
     $update.on('click', function () {
