@@ -31,12 +31,13 @@ var writeTodosList = function($todos) {
 };
 
 var appendTodo = function($todos, todo) {
-    $todos.append($('<div class="row"></div>').append(makeUpdateForm(todo)));
+    $todos.append(makeUpdateForm(todo));
 };
 
 var makeUpdateForm = function(todo) {
     var completed = todo.completedOn !== undefined,
-        $form = $('#updateTodoFormTemplate').find('form').clone(),
+        $row = $('#updateTodoFormTemplate').find('.row').clone(),
+        $form = $row.find('form'),
         $text = $form.find('input[name=text]').val(todo.text),
         $completed = $form.find('input[name=completed]').prop('checked', completed),
         $completedOn = updateCompletedOnField($form.find('.completedOn'), todo.completedOn),
@@ -50,10 +51,10 @@ var makeUpdateForm = function(todo) {
         updateTodo(todo.id, $text.val(), $completed.prop('checked'), success, displayError);
     });
     $delete.on('click', function () {
-        var success = function () { $form.parent().remove(); };
+        var success = function () { $row.remove(); };
         deleteTodo(todo.id, success, displayError);
     });
-    return $form;
+    return $row;
 };
 
 var updateCompletedOnField = function($completedOn, newCompletedOn) {
