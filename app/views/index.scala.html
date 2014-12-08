@@ -4,7 +4,7 @@
 
     <div class="row">
         <form id="addTodoForm" role="form">
-            <div class="col-md-8">
+            <div class="col-md-8 col-xs-8">
                 <h1 class="text-center">My todo list</h1>
                 <div class="form-group">
                     <input name="text" type="text" class="form-control" placeholder="New todo text..." autocomplete="off"/>
@@ -20,26 +20,26 @@
             <form role="form">
                 <div class="form-group">
                     <input type="hidden" name="id"/>
-                    <div class="col-md-12">
+                    <div class="col-md-12 col-xs-12">
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-md-8 col-xs-8">
                                 <div class="form-group no-margin has-feedback">
                                     <input type="text" name="text" class="form-control" autocomplete="off"/>
                                     <i class="hide glyphicon glyphicon-refresh glyphicon-refresh-animate form-control-feedback"></i>
                                 </div>
                             </div>
-                            <div class="col-md-4 no-gutter">
-                                <input type="checkbox" name="completed"/>
-                                <button class="update-button btn btn-default"><i class="glyphicon glyphicon-ok"></i></button>
+                            <div class="col-md-4 col-xs-4 no-gutter">
+                                <input type="checkbox" name="completed" class="hide"/>
+                                <button class="completed-button btn btn-default"><i class="glyphicon glyphicon-ok"></i></button>
                                 <button class="delete-button btn btn-danger"><i class="glyphicon glyphicon-remove"></i></button>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
-                                <em class="createdOn"></em>
+                            <div class="col-md-4 col-xs-4">
+                                <small><em class="createdOn"></em></small>
                             </div>
-                            <div class="col-md-4 text-right">
-                                <em class="completedOn"></em>
+                            <div class="col-md-4 col-xs-4 text-right">
+                                <small><em class="completedOn"></em></small>
                             </div>
                         </div>
                     </div>

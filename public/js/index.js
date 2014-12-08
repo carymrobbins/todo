@@ -39,7 +39,7 @@ var makeUpdateForm = function(todo) {
     wrapper.form.on('submit', function(e) { e.preventDefault(); });
     var updateEvent = buildUpdateEvent(todo, wrapper);
     configureUpdateText(wrapper, updateEvent);
-    wrapper.update.on('click', updateEvent);
+    configureCompletedButton(wrapper, updateEvent);
     wrapper.delete.on('click', function() {
         var success = function() { wrapper.row.remove(); };
         deleteTodo(todo.id, success, displayError);
@@ -56,10 +56,10 @@ var newUpdateFormWrapper = function(todo) {
         form: $form,
         text: $form.find('input[name=text]').val(todo.text),
         spinner: $form.find('.form-control-feedback'),
-        completed: $form.find('input[name=completed]').prop('checked', completed),
         completedOn: updateCompletedOnField($form.find('.completedOn'), todo.completedOn),
         createdOn: $form.find('.createdOn').text(formatCreatedOn(todo.createdOn)),
-        update: $form.find('.update-button'),
+        completed: $form.find('input[name=completed]').prop('checked', completed),
+        completedButton: $form.find('.completed-button'),
         delete: $form.find('.delete-button')
     };
 };
@@ -86,18 +86,51 @@ var configureUpdateText = function(wrapper, updateEvent) {
     }));
 };
 
+var configureCompletedButton = function(wrapper, updateEvent) {
+    var updateButton = function() {
+        toggleClass(wrapper.completedButton, wrapper.completed.prop('checked'), 'btn-success', 'btn-default');
+    };
+    updateButton();
+    wrapper.completedButton.on('click', function() {
+        toggleCheckbox(wrapper.completed);
+        updateButton();
+        updateEvent();
+    });
+};
+
+var toggleCheckbox = function(checkbox) {
+    if (checkbox.prop('checked') === true) {
+        checkbox.prop('checked', false);
+        return false;
+    } else {
+        checkbox.prop('checked', true);
+        return true;
+    }
+};
+
+var toggleClass = function(element, test, classIfTrue, classIfFalse) {
+    element.removeClass(test ? classIfFalse : classIfTrue).addClass(test ? classIfTrue : classIfFalse);
+};
+
 var updateCompletedOnField = function($completedOn, newCompletedOn) {
     return newCompletedOn === undefined
         ? $completedOn.text("")
         : $completedOn.text(formatCompletedOn(newCompletedOn));
 };
 
+var formatFromNow = function(seconds) {
+    // If we get a future time string, e.g. 'in a few seconds', then we are probably dealing
+    // with a margin of error due to local/server time.  Assume it's basically 'just now'.
+    var result = moment(seconds).fromNow();
+    return result.indexOf('in') === 0 ? 'just now' : result;
+};
+
 var formatCreatedOn = function(createdOn) {
-    return 'Created ' + moment(createdOn).fromNow();
+    return 'Created ' + formatFromNow(createdOn);
 };
 
 var formatCompletedOn = function(completedOn) {
-    return 'Completed ' + moment(completedOn).fromNow();
+    return 'Completed ' + formatFromNow(completedOn);
 };
 
 var getTodos = function(success, error) {
