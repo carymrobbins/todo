@@ -55,6 +55,7 @@ var newUpdateFormWrapper = function(todo) {
         row: $row,
         form: $form,
         text: $form.find('input[name=text]').val(todo.text),
+        spinner: $form.find('.form-control-feedback'),
         completed: $form.find('input[name=completed]').prop('checked', completed),
         completedOn: updateCompletedOnField($form.find('.completedOn'), todo.completedOn),
         update: $form.find('.update-button'),
@@ -64,8 +65,11 @@ var newUpdateFormWrapper = function(todo) {
 
 var buildUpdateEvent = function(todo, wrapper) {
     return function() {
+        wrapper.spinner.removeClass('hide');
         var success = function(updatedTodo) {
             updateCompletedOnField(wrapper.completedOn, updatedTodo.completedOn);
+            // Allow the spinner to spin before hiding.
+            setTimeout(function() { wrapper.spinner.addClass('hide'); }, 250);
         };
         updateTodo(todo.id, wrapper.text.val(), wrapper.completed.prop('checked'), success, displayError);
     };
