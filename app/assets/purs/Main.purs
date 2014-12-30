@@ -1,6 +1,10 @@
 module Main where
 
-foreign import data Undefined :: *
-foreign import console :: { log :: String -> Undefined }
+import Control.Monad.JQuery
+import Debug.Trace
 
-main = console.log "Hello, PureScript!"
+main = do
+    trace "Hello, PureScript!"
+    ready $ trace "Later"
+    trace "Now"
+
